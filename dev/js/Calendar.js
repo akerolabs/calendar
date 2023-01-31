@@ -28,6 +28,7 @@
     this.type =           this.element.hasClass('daterange--single') ? 'single' : 'double';
     this.required =       settings.required == false ? false : true;
 
+    this.timezone = settings.timezone || null;
     this.format =             settings.format || {};
     this.format.input =       settings.format && settings.format.input || 'MMMM D, YYYY';
     this.format.preset =      settings.format && settings.format.preset || 'll';
@@ -747,7 +748,10 @@
 
 
   Calendar.prototype.parseDate = function(d) {
-    if (moment.defaultZone !== null && moment.hasOwnProperty('tz')) {
+    if (this.timezone) {
+      return moment.tz(d, this.format.input, this.timezone);
+    }
+    else if (moment.defaultZone !== null && moment.hasOwnProperty('tz')) {
       return moment.tz(d, this.format.input, moment.defaultZone.name);
     } else {
       return moment(d, this.format.input);
